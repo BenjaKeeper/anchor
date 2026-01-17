@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 /// Client for interacting with OpenAI API
@@ -7,16 +8,16 @@ class OpenAIClient {
   final String? _apiKey;
 
   OpenAIClient({String? apiKey})
-    : _apiKey = apiKey ?? const String.fromEnvironment('OPENAI_API_KEY');
+    : _apiKey = apiKey ?? dotenv.env['OPENAI_API_KEY'];
 
   /// Generate a chat completion
   Future<Map<String, dynamic>> chatCompletion({
     required List<Map<String, String>> messages,
-    String model = 'gpt-4-turbo-preview',
+    String model = 'gpt-4o', // Updated to latest model standard
     double temperature = 0.7,
     int maxTokens = 500,
   }) async {
-    // If no API key is provided, return a mock response for demo purposes
+    // Check if key is available
     if (_apiKey == null || _apiKey.isEmpty) {
       _log('Warning: No OpenAI API key found. Using mock response.');
       await Future.delayed(

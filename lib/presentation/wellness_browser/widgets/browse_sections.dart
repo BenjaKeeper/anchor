@@ -54,7 +54,7 @@ class _BrowseSectionWidget extends StatelessWidget {
 
   Widget _buildHorizontalScrollLayout() {
     return SizedBox(
-      height: 280,
+      height: 340,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),

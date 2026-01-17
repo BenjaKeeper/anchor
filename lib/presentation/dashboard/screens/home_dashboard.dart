@@ -6,11 +6,38 @@ import '../../../core/theme/app_theme.dart';
 import '../../widgets/widgets.dart';
 
 /// Home dashboard screen - main screen after onboarding
-class HomeDashboard extends ConsumerWidget {
+class HomeDashboard extends ConsumerStatefulWidget {
   const HomeDashboard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeDashboard> createState() => _HomeDashboardState();
+}
+
+class _HomeDashboardState extends ConsumerState<HomeDashboard> {
+  int _secretTapCount = 0;
+  DateTime? _lastTapTime;
+
+  void _handleSecretTap() {
+    final now = DateTime.now();
+    if (_lastTapTime != null &&
+        now.difference(_lastTapTime!) > const Duration(seconds: 1)) {
+      _secretTapCount = 0;
+    }
+
+    _secretTapCount++;
+    _lastTapTime = now;
+
+    if (_secretTapCount >= 3) {
+      _secretTapCount = 0;
+      // Reset onboarding state if needed, but for now just navigate
+      // Use pushReplacement to ensure no back button weirdness if strictly restarting
+      // But user said "vuelva", context.go is safer for a full reset feel
+      context.go('/onboarding');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         bottom:
@@ -23,25 +50,29 @@ class HomeDashboard extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Good morning,',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.mutedForeground,
+                  GestureDetector(
+                    onTap: _handleSecretTap,
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Good morning,',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.mutedForeground,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Alex',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.navy,
+                        Text(
+                          'Alex',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.navy,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
